@@ -30,13 +30,17 @@ _gulp2['default'].task('views', function () {
 });
 
 _gulp2['default'].task('styles', function () {
-  return _gulp2['default'].src('app/styles/*.scss').pipe($.plumber()).pipe($.sourcemaps.init()).pipe($.sass.sync({
+  return _gulp2['default'].src('app/styles/*.sass').pipe($.plumber())
+  // .pipe($.sourcemaps.init())
+  .pipe($.sass.sync({
+    indentedSyntax: true,
     outputStyle: 'expanded',
     precision: 10,
     includePaths: ['.']
-  }).on('error', $.sass.logError)).pipe($.autoprefixer({ browsers: ['last 1 version'] }))
+  }).on('error', $.sass.logError)).pipe($.autoprefixer({ browsers: ['last 2 version'] }))
   //.pipe($.csscomb())
-  .pipe($.sourcemaps.write()).pipe(_gulp2['default'].dest('.tmp/styles')).pipe(reload({ stream: true }));
+  // .pipe($.sourcemaps.write())
+  .pipe(_gulp2['default'].dest('.tmp/styles')).pipe(reload({ stream: true }));
 });
 
 function lint(files, options) {
@@ -86,8 +90,8 @@ _gulp2['default'].task('sprite', function () {
   // Generate our spritesheet
   var spriteData = _gulp2['default'].src('app/images/sprite/*.png').pipe($.spritesmith({
     imgName: 'sprite.png',
-    cssName: '_sprite.scss',
-    cssTemplate: 'scss.template.mustache',
+    cssName: '_sprite.sass',
+    cssTemplate: 'sass.template.mustache',
     algorithm: 'binary-tree',
     padding: 8
   }));
@@ -121,7 +125,7 @@ _gulp2['default'].task('watch', ['views', 'styles', 'fonts'], function () {
     server: {
       baseDir: ['.tmp', 'app'],
       routes: {
-        '/bower_components': 'bower_components'
+        '/components': 'components'
       }
     }
   });
@@ -129,7 +133,7 @@ _gulp2['default'].task('watch', ['views', 'styles', 'fonts'], function () {
   _gulp2['default'].watch(['app/*.html', '.tmp/*.html', 'app/scripts/**/*.js', 'app/images/**/*', '.tmp/fonts/**/*']).on('change', reload);
 
   _gulp2['default'].watch('app/templates/**/*.jade', ['views']);
-  _gulp2['default'].watch('app/styles/**/*.scss', ['styles']);
+  _gulp2['default'].watch('app/styles/**/*.sass', ['styles']);
   _gulp2['default'].watch('app/fonts/**/*', ['fonts']);
   _gulp2['default'].watch('app/images/sprite/*.png', ['sprite']);
   // gulp.watch('bower.json', ['wiredep', 'fonts']);
@@ -153,7 +157,7 @@ _gulp2['default'].task('watch:dist', function () {
 //     server: {
 //       baseDir: 'test',
 //       routes: {
-//         '/bower_components': 'bower_components'
+//         '/components': 'components'
 //       }
 //     }
 //   });
@@ -164,7 +168,7 @@ _gulp2['default'].task('watch:dist', function () {
 
 // inject bower components
 _gulp2['default'].task('wiredep', function () {
-  _gulp2['default'].src('app/styles/*.scss').pipe((0, _wiredep.stream)({
+  _gulp2['default'].src('app/styles/*.sass').pipe((0, _wiredep.stream)({
     ignorePath: /^(\.\.\/)+/
   })).pipe(_gulp2['default'].dest('app/styles'));
 

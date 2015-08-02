@@ -2,7 +2,7 @@
     "exclude": [
         ".git/**",
         "node_modules/**",
-        "bower_components/**"
+        "components/**"
     ],
     "sort-order": [
         [

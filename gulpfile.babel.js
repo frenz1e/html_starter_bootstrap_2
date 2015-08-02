@@ -18,17 +18,18 @@ gulp.task('views', () => {
 });
 
 gulp.task('styles', () => {
-  return gulp.src('app/styles/*.scss')
+  return gulp.src('app/styles/*.sass')
     .pipe($.plumber())
-    .pipe($.sourcemaps.init())
+    // .pipe($.sourcemaps.init())
     .pipe($.sass.sync({
+      indentedSyntax: true,
       outputStyle: 'expanded',
       precision: 10,
       includePaths: ['.']
     }).on('error', $.sass.logError))
-    .pipe($.autoprefixer({browsers: ['last 1 version']}))
+    .pipe($.autoprefixer({browsers: ['last 2 version']}))
     //.pipe($.csscomb())
-    .pipe($.sourcemaps.write())
+    // .pipe($.sourcemaps.write())
     .pipe(gulp.dest('.tmp/styles'))
     .pipe(reload({stream: true}));
 });
@@ -89,8 +90,8 @@ gulp.task('sprite', function () {
   // Generate our spritesheet
   var spriteData = gulp.src('app/images/sprite/*.png').pipe($.spritesmith({
       imgName: 'sprite.png',
-      cssName: '_sprite.scss',
-      cssTemplate: 'scss.template.mustache',
+      cssName: '_sprite.sass',
+      cssTemplate: 'sass.template.mustache',
       algorithm: 'binary-tree',
       padding: 8
   }));
@@ -132,7 +133,7 @@ gulp.task('watch', ['views', 'styles', 'fonts'], () => {
     server: {
       baseDir: ['.tmp', 'app'],
       routes: {
-        '/bower_components': 'bower_components'
+        '/components': 'components'
       }
     }
   });
@@ -146,7 +147,7 @@ gulp.task('watch', ['views', 'styles', 'fonts'], () => {
   ]).on('change', reload);
   
   gulp.watch('app/templates/**/*.jade', ['views']);
-  gulp.watch('app/styles/**/*.scss', ['styles']);
+  gulp.watch('app/styles/**/*.sass', ['styles']);
   gulp.watch('app/fonts/**/*', ['fonts']);
   gulp.watch('app/images/sprite/*.png', ['sprite']);
   // gulp.watch('bower.json', ['wiredep', 'fonts']);
@@ -170,7 +171,7 @@ gulp.task('watch:dist', () => {
 //     server: {
 //       baseDir: 'test',
 //       routes: {
-//         '/bower_components': 'bower_components'
+//         '/components': 'components'
 //       }
 //     }
 //   });
@@ -181,7 +182,7 @@ gulp.task('watch:dist', () => {
 
 // inject bower components
 gulp.task('wiredep', () => {
-  gulp.src('app/styles/*.scss')
+  gulp.src('app/styles/*.sass')
     .pipe(wiredep({
       ignorePath: /^(\.\.\/)+/
     }))
